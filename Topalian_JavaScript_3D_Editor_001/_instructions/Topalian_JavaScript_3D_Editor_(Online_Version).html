@@ -1,0 +1,506 @@
+<!-- Dedicated to God the Father -->
+
+<!-- All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024 -->
+
+<!-- https://github.com/ChristopherTopalian -->
+
+<!-- https://github.com/ChristopherAndrewTopalian -->
+
+<!-- Topalian_JavaScript_3D_Editor_(Online_Version).html -->
+
+<!-- Version 001 - (2024-06-04) -->
+
+<html>
+<head>
+<title> Topalian JavaScript 3D Editor </title>
+
+<style>
+
+/* Dedicated to God the Father */
+
+/* All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024 */
+
+/* https://github.com/ChristopherTopalian */
+
+/* https://github.com/ChristopherAndrewTopalian */
+
+/* style001.css */
+
+html
+{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body
+{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial;
+    overflow: hidden;
+}
+
+canvas
+{
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+a
+{
+    color: rgb(100, 100, 100);
+    text-decoration: none;
+}
+
+a:hover
+{
+    text-decoration: underline;
+}
+
+.buttonStyle001
+{
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    padding: 2px 10px;
+    border: solid 1px rgb(100, 100, 100);
+    border-radius: 8px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.buttonStyle001:hover
+{
+    border-color: aqua;
+    color: aqua;
+}
+
+.buttonStyle001:active
+{
+    border-color: magenta;
+    color: magenta;
+}
+
+</style>
+
+<!--
+<script src = "js/0Engine/babylon.js"></script>
+-->
+
+<script src = "https://cdn.babylonjs.com/babylon.js"></script>
+
+<script>
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// shortcuts.js
+
+function ge(whichId)
+{
+    let result = document.getElementById(whichId);
+
+    return result;
+}
+
+function ce(whichType)
+{
+    let result = document.createElement(whichType);
+
+    return result;
+}
+
+function ba(whichElement)
+{
+    let result = document.body.append(whichElement);
+
+    return result;
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeArcRotateCamera.js
+
+function makeArcRotateCamera(whichScene, whichCanvas)
+{
+    // create the arc rotate camera
+    let camera = new BABYLON.ArcRotateCamera('arcCamera1', 0, 0, 10, BABYLON.Vector3(0, 0, 100), whichScene);
+
+    // scroll zoom speed
+    camera.wheelPrecision = 20;
+    camera.speed = 20;
+
+    camera.attachControl(whichCanvas, false);
+
+    // camera position
+    camera.setPosition(new BABYLON.Vector3(0, 20, -10));
+
+    camera.checkCollisions = true;
+    camera.applyGravity = true;
+
+    // how close to object
+    camera.lowerRadiusLimit = 2;
+
+    // how far from object
+    camera.upperRadiusLimit = 100;
+
+    return camera;
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeLight.js
+
+let light001 =
+[
+    {
+        name: 'light',
+        rotationX: 0,
+        rotationY: 1,
+        rotationZ: 0,
+        intensity: 0.7
+    }
+];
+
+function makeLight(whichArray, whichScene)
+{
+    let light = new BABYLON.HemisphericLight(whichArray[0].name,
+    new BABYLON.Vector3(
+    whichArray[0].rotationX,
+    whichArray[0].rotationY,
+    whichArray[0].rotationZ),
+    whichScene);
+
+    light.intensity = whichArray[0].intensity;
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeObjectMenu.js
+
+function makeObjectMenu(whichScene)
+{
+    // objectMenuContainer
+    let objectMenuContainer = ce('div');
+    objectMenuContainer.id = 'objectMenuContainer';
+    objectMenuContainer.style.position = 'fixed';
+    objectMenuContainer.style.left = '10px';
+    objectMenuContainer.style.top = '10px';
+    objectMenuContainer.style.display = 'grid';
+    objectMenuContainer.style.gridTemplateColumns = 'repeat(1, 1fr)';
+    objectMenuContainer.style.gap = '2.5px';
+    ba(objectMenuContainer);
+
+    //-//
+
+    // cubeButton
+    let cubeButton = ce('button');
+    cubeButton.id = 'cubeButton';
+    cubeButton.className = 'buttonStyle001';
+    cubeButton.textContent = 'Cube';
+    cubeButton.onclick = function()
+    {
+        makeCube(whichScene);
+    };
+    objectMenuContainer.append(cubeButton);
+
+    //-//
+
+    // sphereButton
+    let sphereButton = ce('button');
+    sphereButton.id = 'sphereButton';
+    sphereButton.className = 'buttonStyle001';
+    sphereButton.textContent = 'Sphere';
+    sphereButton.onclick = function()
+    {
+        makeSphere(whichScene);
+    };
+    objectMenuContainer.append(sphereButton);
+
+    //-//
+
+    // pyramidButton
+    let pyramidButton = ce('button');
+    pyramidButton.id = 'pyramidButton';
+    pyramidButton.className = 'buttonStyle001';
+    pyramidButton.textContent = 'Pyramid';
+    pyramidButton.onclick = function()
+    {
+        makePyramid(whichScene);
+    };
+    objectMenuContainer.append(pyramidButton);
+
+    //-//
+
+    // cylinderButton
+    let cylinderButton = ce('button');
+    cylinderButton.id = 'pyramidButton';
+    cylinderButton.className = 'buttonStyle001';
+    cylinderButton.textContent = 'Cylinder';
+    cylinderButton.onclick = function()
+    {
+        makeCylinder(whichScene);
+    };
+    objectMenuContainer.append(cylinderButton);
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeCube.js
+
+let cubeCounter = 0;
+
+function makeCube(whichScene)
+{
+    cubeCounter += 1;
+
+    // create a new cube
+    let box = BABYLON.MeshBuilder.CreateBox("box" + cubeCounter, { size: 1 }, whichScene);
+
+    box.id = 'cube' + cubeCounter;
+
+    box.position.x = Math.round(Math.random() * 5);
+
+    box.position.z = Math.round(Math.random() * 5);
+
+    // when right clicked
+    box.actionManager = new BABYLON.ActionManager(whichScene);
+
+    box.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnRightPickTrigger,
+            function (evt)
+            {
+                evt.source.position.x += 1;
+            }
+        )
+    );
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeCylinder.js
+
+function makeCylinder(whichScene)
+{
+    // create a cylinder
+    let cylinder = BABYLON.MeshBuilder.CreateCylinder("cylinder", { diameterTop: 1, diameterBottom: 1, height: 2 }, whichScene);
+
+    // set the position of the cylinder
+    cylinder.position.x = Math.round(Math.random() * 5);
+    cylinder.position.y = Math.round(Math.random() * 5);
+    cylinder.position.z = Math.round(Math.random() * 5);
+
+    return cylinder;
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makePyramid.js
+
+function makePyramid(whichScene)
+{
+    // define the vertices of the pyramid
+    let vertices =
+    [
+        new BABYLON.Vector3(-0.5, 0, -0.5),
+        new BABYLON.Vector3(0.5, 0, -0.5),
+        new BABYLON.Vector3(0.5, 0, 0.5),
+        new BABYLON.Vector3(-0.5, 0, 0.5),
+        // apex of the pyramid
+        new BABYLON.Vector3(0, 1, 0)
+    ];
+
+    // define the faces of the pyramid
+    let faces = [
+        [0, 1, 4], // base triangle 1
+        [1, 2, 4], // base triangle 2
+        [2, 3, 4], // base triangle 3
+        [3, 0, 4]  // base triangle 4
+    ];
+
+    // create the pyramid mesh
+    let pyramid = BABYLON.MeshBuilder.CreatePolyhedron("pyramid", { vertices: vertices, faceIndices: faces }, whichScene);
+
+    // set position
+    pyramid.position.x = Math.round(Math.random() * 5);
+    pyramid.position.y = Math.round(Math.random() * 5);
+
+    return pyramid;
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeSphere.js
+
+function makeSphere(whichScene)
+{
+    let sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1 }, whichScene);
+
+    sphere.position.x = Math.round(Math.random() * 5);
+    sphere.position.y = Math.round(Math.random() * 5);
+
+    return sphere;
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeScene.js
+
+function makeScene(whichEngine, whichCanvas)
+{
+    let scene = new BABYLON.Scene(whichEngine);
+
+    // background color
+    scene.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
+
+    //-//
+
+    makeLight(light001);
+
+    makeArcRotateCamera(scene, whichCanvas)
+
+    return scene;
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// makeTitleOfApp.js
+
+function makeTitleOfApp()
+{
+    // titleContainer
+    let titleContainer = ce('div');
+    titleContainer.style.position = 'absolute';
+    titleContainer.style.right = '10px';
+    titleContainer.style.bottom = '4px';
+    titleContainer.style.zIndex = 1;
+    titleContainer.style.fontFamily = 'Arial';
+    titleContainer.style.fontSize = '17px';
+    titleContainer.style.fontWeight = 'bold';
+    ba(titleContainer);
+
+    //-//
+
+    // titleOfApp
+    let titleOfApp = ce('div');
+    titleOfApp.id = 'titleOfApp';
+    titleOfApp.innerHTML =
+    `<a href = 'https://github.com/christophertopalian/topalian_javascript_3d_editor' target = '_blank'> Topalian JavaScript 3D Editor </a>`;
+    titleContainer.append(titleOfApp);
+}
+
+// Dedicated to God the Father
+
+// All Rights Reserved Christopher Andrew Topalian Copyright 2000-2024
+
+// https://github.com/ChristopherTopalian
+
+// https://github.com/ChristopherAndrewTopalian
+
+// whenLoaded.js
+
+document.addEventListener("DOMContentLoaded", function()
+{
+    // get the canvas element
+    let canvas = ge("renderCanvas");
+
+    // create the Babylon.js engine
+    let engine = new BABYLON.Engine(canvas, true, { antialias: true });
+
+    // create the scene
+    let scene = makeScene(engine, canvas);
+
+    // run the render loop
+    engine.runRenderLoop(function()
+    {
+        scene.render();
+    });
+
+    // when window is resized
+    window.addEventListener("resize", function ()
+    {
+        engine.resize();
+    });
+
+    makeObjectMenu(scene);
+
+    makeTitleOfApp();
+});
+
+</script>
+
+</head>
+
+<body>
+
+<canvas id = 'renderCanvas'></canvas>
+
+</body>
+
+</html>
+
